@@ -10,9 +10,9 @@ import path from "node:path";
 
 // The ScoutCode key never reaches the renderer bundle: it is stored encrypted
 // with safeStorage in the main process, and chat calls are made from here.
-// Base URL from the ScoutCode docs (local instance). Override by setting
-// baseUrl in <userData>/ai/config.json when using a hosted endpoint.
-const DEFAULT_BASE_URL = "http://localhost:4321/v1";
+// Hosted ScoutCode endpoint. Override by setting baseUrl in
+// <userData>/ai/config.json (e.g. a local instance on http://localhost:4321/v1).
+const DEFAULT_BASE_URL = "https://scoutcode.dev/v1";
 const KEY_PREFIX = "sk-scout-";
 const MAX_TRACKS = 40;
 
