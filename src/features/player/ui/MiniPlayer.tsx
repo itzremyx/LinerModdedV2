@@ -15,7 +15,7 @@ import {
   RepeatOne,
   Shuffle,
 } from "@solar-icons/react";
-import { HeartFill, HeartLine } from "@mingcute/react";
+import { HeartFill, HeartLine, MoonFill } from "@mingcute/react";
 
 import { PlayerMorphIcon, ICON_PLAY, ICON_PAUSE } from "./morphPlayerIcons";
 
@@ -40,8 +40,10 @@ import { useCoverReady, CoverImage, loadCoverElement } from "@/features/covers";
 import { useHasPageBackdrop } from "@/features/settings/store/customizationStore";
 import { ArtistAvatar, ArtistLink } from "@/features/artist";
 import { isLocalTrackId } from "@/shared/media/local";
-import DropdownMenu from "@/shared/ui/DropdownMenu";
+import { useCompactMode } from "@/features/settings/store/customizationStore";
+import DropdownMenu, { type DropdownMenuItem } from "@/shared/ui/DropdownMenu";
 import { useSongMenuItems } from "../hooks/useSongMenuItems";
+import { useSleepTimerStore } from "../store/sleepTimerStore";
 
 const PROGRESS_STEP_MS = 1000;
 const PROGRESS_JUMP_TRANSITION =
@@ -301,6 +303,7 @@ function MiniPlayer({
   );
   const [eqOpen, setEqOpen] = useState(false);
   const [eqPopupStyle, setEqPopupStyle] = useState<React.CSSProperties>({});
+  const [sleepOpen, setSleepOpen] = useState(false);
   const miniPlayerRootRef = useRef<HTMLDivElement>(null);
   const volumePopupRef = useRef<HTMLDivElement>(null);
   const volumeToggleRef = useRef<HTMLButtonElement>(null);
@@ -394,6 +397,43 @@ function MiniPlayer({
     return <Repeat size={18} weight="Outline" />;
   }, [player.repeat]);
   const repeatLabel = t(`player.repeat_${player.repeat}`);
+
+  const sleepMode = useSleepTimerStore((s) => s.mode);
+  const sleepRemaining = useSleepTimerStore((s) => s.remaining);
+  const setSleepMode = useSleepTimerStore((s) => s.set);
+  const audioQuality = usePlayerStore((s) => s.audioQuality);
+  const compactMode = useCompactMode();
+  const sleepActive = sleepMode !== "off";
+
+  const formatSleepRemaining = useCallback((totalSeconds: number) => {
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+  }, []);
+
+  const sleepItems = useMemo<DropdownMenuItem[]>(
+    () => [
+      {
+        id: "off",
+        label: t("player.sleep_timer.off"),
+        active: sleepMode === "off",
+        onClick: () => setSleepMode("off"),
+      },
+      {
+        id: "end-of-track",
+        label: t("player.sleep_timer.end_of_track"),
+        active: sleepMode === "end-of-track",
+        onClick: () => setSleepMode("end-of-track"),
+      },
+      ...([15, 30, 45, 60] as const).map((minutes) => ({
+        id: `${minutes}m`,
+        label: t("player.sleep_timer.minutes", { minutes }),
+        active: sleepMode === minutes,
+        onClick: () => setSleepMode(minutes),
+      })),
+    ],
+    [sleepMode, setSleepMode, t],
+  );
 
   // "on" state for the shuffle / repeat toggles: the hover tint, but opaque, so the
   // progress fill sliding underneath never changes it. Values are the hover tint
@@ -579,7 +619,7 @@ function MiniPlayer({
   return (
     <div
       ref={miniPlayerRootRef}
-      className="relative h-[64px] w-full select-none"
+      className={`relative w-full select-none ${compactMode ? "h-[56px]" : "h-[64px]"}`}
     >
       <AnimatePresence>
         {volumeOpen && (
@@ -640,7 +680,7 @@ function MiniPlayer({
       </AnimatePresence>
 
       <div
-        className={`relative h-[64px] w-full overflow-hidden cursor-pointer ${
+        className={`relative ${compactMode ? "h-[56px]" : "h-[64px]"} w-full overflow-hidden cursor-pointer ${
           usesRoundedStyle
             ? "rounded-full border-[0.5px] border-border-tertiary bg-bg-primary"
             : embedded
@@ -857,6 +897,22 @@ function MiniPlayer({
                 {isLiked ? <HeartFill size={20} /> : <HeartLine size={20} />}
               </button>
             )}
+            <span
+              className="shrink-0 rounded-[5px] bg-black/[0.06] px-[6px] py-[2px] text-[10px] font-medium uppercase tracking-wide text-text-tertiary pointer-events-none prevent-seek"
+              title={t("settings.audio_quality.title")}
+            >
+              {t(
+                `settings.audio_quality.${
+                  audioQuality === "lossless"
+                    ? "highest"
+                    : audioQuality === "high"
+                      ? "high"
+                      : audioQuality === "standard"
+                        ? "standard"
+                        : "data_saver"
+                }`,
+              )}
+            </span>
           </div>
 
           <div
@@ -908,6 +964,39 @@ function MiniPlayer({
               >
                 {repeatIcon}
               </button>
+              <DropdownMenu
+                trigger={
+                  <button
+                    type="button"
+                    aria-label={t("player.sleep_timer.title")}
+                    title={t("player.sleep_timer.title")}
+                    className={`${iconButtonClass} !w-auto px-[6px] gap-[4px] ${
+                      sleepActive ? activeToggleClass : ""
+                    }`}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={() => {
+                      setVolumeOpen(false);
+                      setSpeedOpen(false);
+                      setEqOpen(false);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <MoonFill size={16} />
+                    {sleepMode !== "off" &&
+                      sleepMode !== "end-of-track" &&
+                      sleepRemaining > 0 && (
+                        <span className="text-[11px] font-medium leading-none tabular-nums text-amber-600 dark:text-amber-400">
+                          {formatSleepRemaining(sleepRemaining)}
+                        </span>
+                      )}
+                  </button>
+                }
+                items={sleepItems}
+                open={sleepOpen}
+                onOpenChange={setSleepOpen}
+                side="top"
+                align="end"
+              />
               <button
                 ref={eqToggleRef}
                 type="button"

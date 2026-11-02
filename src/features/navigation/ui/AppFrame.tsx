@@ -71,6 +71,10 @@ import {
 import { UpdateModal, UpdateToastBridge } from "@/features/updater";
 import { YoutubeSignInNotice } from "@/features/youtube-auth";
 import { useOfflineModeStore } from "@/features/connectivity";
+import {
+  useLiquidGlass,
+  useCompactMode,
+} from "@/features/settings/store/customizationStore";
 
 interface AppFrameProps {
   children: React.ReactNode;
@@ -144,6 +148,19 @@ export default function AppFrame({ children }: AppFrameProps) {
       localStorage.removeItem(key);
     }
   }, []);
+
+  const liquidGlass = useLiquidGlass();
+  const compactMode = useCompactMode();
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (liquidGlass) {
+      root.setAttribute("data-liquid-glass", "true");
+    } else {
+      root.removeAttribute("data-liquid-glass");
+    }
+    return () => root.removeAttribute("data-liquid-glass");
+  }, [liquidGlass]);
 
   const handleQueuePopupToggle = useCallback((open: boolean) => {
     setQueuePopupOpen(open);
@@ -775,7 +792,9 @@ export default function AppFrame({ children }: AppFrameProps) {
               "flex-1 min-w-0 flex flex-col relative h-full overflow-hidden [--page-inset-top:56px]",
               "rounded-item",
               shouldShowMiniPlayer && hasPageBackdrop
-                ? "[--page-inset-bottom:64px] [--floating-inset-bottom:70px]"
+                ? compactMode
+                  ? "[--page-inset-bottom:56px] [--floating-inset-bottom:62px]"
+                  : "[--page-inset-bottom:64px] [--floating-inset-bottom:70px]"
                 : "[--page-inset-bottom:0px] [--floating-inset-bottom:0px]",
             )}
           >
@@ -901,7 +920,10 @@ export default function AppFrame({ children }: AppFrameProps) {
               top: 6,
             }}
           >
-            <div className="w-[min(660px,calc(100vw-72px))] h-[54px] rounded-control pointer-events-auto flex items-center px-[18px] gap-[14px] bg-bg-panel border border-border-primary/50">
+            <div
+              data-liquid-glass-surface
+              className="w-[min(660px,calc(100vw-72px))] h-[54px] rounded-control pointer-events-auto flex items-center px-[18px] gap-[14px] bg-bg-panel border border-border-primary/50"
+            >
               <span className="shrink-0 flex items-center justify-center text-text-tertiary">
                 <AnimatePresence mode="wait" initial={false}>
                   {searchLoading ? (
@@ -979,6 +1001,7 @@ export default function AppFrame({ children }: AppFrameProps) {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -6, scale: 0.99 }}
                   transition={{ duration: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  data-liquid-glass-surface
                   className="w-[min(660px,calc(100vw-72px))] mt-[8px] max-h-[500px] h-[500px] rounded-control pointer-events-auto flex flex-col overflow-hidden bg-bg-panel border border-border-primary/50"
                 >
                   <div className="flex gap-[6px] px-[14px] pt-[12px] pb-[6px] shrink-0 overflow-x-auto">
@@ -1081,6 +1104,7 @@ export default function AppFrame({ children }: AppFrameProps) {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -6, scale: 0.99 }}
                   transition={{ duration: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  data-liquid-glass-surface
                   className="w-[min(660px,calc(100vw-72px))] mt-[8px] max-h-[480px] h-auto rounded-control pointer-events-auto flex flex-col overflow-hidden bg-bg-panel border border-border-primary/50"
                 >
                   <SearchHistoryList

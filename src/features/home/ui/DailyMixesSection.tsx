@@ -1,4 +1,5 @@
-import { memo } from "react";
+import { memo, useState } from "react";
+import { GridFill, GridLine } from "@mingcute/react";
 import ScrollableRow from "@/shared/ui/ScrollableRow";
 import { useTranslation } from "@/languages";
 import type { DailyMix } from "../hooks/useDailyMixes";
@@ -9,6 +10,17 @@ export interface DailyMixesSectionProps {
   mixes: DailyMix[];
   headingMarginTop?: string;
   accentCoverUrl?: string;
+}
+
+const MIX_VIEW_KEY = "liner:home-mixes-view:v1";
+
+function loadMixView(): "row" | "grid" {
+  if (typeof localStorage === "undefined") return "row";
+  try {
+    return localStorage.getItem(MIX_VIEW_KEY) === "grid" ? "grid" : "row";
+  } catch {
+    return "row";
+  }
 }
 
 const headingStyle: React.CSSProperties = {
@@ -24,7 +36,15 @@ function DailyMixesSection({
   accentCoverUrl,
 }: DailyMixesSectionProps) {
   const { t } = useTranslation();
+  const [view, setView] = useState<"row" | "grid">(loadMixView);
   if (mixes.length === 0) return null;
+
+  const changeView = (next: "row" | "grid") => {
+    setView(next);
+    try {
+      localStorage.setItem(MIX_VIEW_KEY, next);
+    } catch {}
+  };
 
   const firstCoverUrl = accentCoverUrl ?? mixes[0]?.coverUrl;
 
@@ -42,17 +62,59 @@ function DailyMixesSection({
             {t("home.dailyMixes") || "Your Mixes"}
           </h2>
         </div>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            aria-label={t("home.mixes_view_row")}
+            aria-pressed={view === "row"}
+            title={t("home.mixes_view_row")}
+            onClick={() => changeView("row")}
+            className={`inline-flex h-[30px] w-[30px] items-center justify-center rounded-md border-none bg-transparent cursor-pointer ${
+              view === "row"
+                ? "text-text-primary"
+                : "text-text-tertiary hover:text-text-primary"
+            }`}
+          >
+            <GridLine size={16} />
+          </button>
+          <button
+            type="button"
+            aria-label={t("home.mixes_view_grid")}
+            aria-pressed={view === "grid"}
+            title={t("home.mixes_view_grid")}
+            onClick={() => changeView("grid")}
+            className={`inline-flex h-[30px] w-[30px] items-center justify-center rounded-md border-none bg-transparent cursor-pointer ${
+              view === "grid"
+                ? "text-text-primary"
+                : "text-text-tertiary hover:text-text-primary"
+            }`}
+          >
+            <GridFill size={16} />
+          </button>
+        </div>
       </div>
 
-      <ScrollableRow className="flex gap-[28px] pl-3 pr-3 mt-[12px] overflow-x-auto pb-[2px]">
-        {mixes.map((mix, index) => (
-          <DailyMixCard
-            key={`daily-mix-${mix.id}-${index}`}
-            mix={mix}
-            index={index}
-          />
-        ))}
-      </ScrollableRow>
+      {view === "grid" ? (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(175px,1fr))] gap-[28px] px-3 mt-[12px] pb-[2px]">
+          {mixes.map((mix, index) => (
+            <DailyMixCard
+              key={`daily-mix-${mix.id}-${index}`}
+              mix={mix}
+              index={index}
+            />
+          ))}
+        </div>
+      ) : (
+        <ScrollableRow className="flex gap-[28px] pl-3 pr-3 mt-[12px] overflow-x-auto pb-[2px]">
+          {mixes.map((mix, index) => (
+            <DailyMixCard
+              key={`daily-mix-${mix.id}-${index}`}
+              mix={mix}
+              index={index}
+            />
+          ))}
+        </ScrollableRow>
+      )}
     </div>
   );
 }

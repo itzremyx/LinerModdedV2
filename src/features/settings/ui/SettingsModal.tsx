@@ -4,6 +4,7 @@ import {
   CloseLine,
   DiscordFill,
   KeyboardFill,
+  SparklesFill,
   YoutubeFill,
 } from "@mingcute/react";
 import {
@@ -27,6 +28,7 @@ import {
   OverlayTab,
   DiscordTab,
   YoutubeTab,
+  AiTab,
 } from "./tabs";
 import { SettingsSidebar, type SettingsNavIconProps } from "./SettingsSidebar";
 
@@ -34,6 +36,7 @@ type TabId =
   | "Playback"
   | "Shortcuts"
   | "Overlay"
+  | "Ai"
   | "Discord"
   | "Youtube"
   | "Appearance"
@@ -44,6 +47,7 @@ const TAB_ICONS: Record<TabId, React.ComponentType<SettingsNavIconProps>> = {
   Playback: Play,
   Shortcuts: KeyboardFill,
   Overlay: Widget5,
+  Ai: SparklesFill,
   Discord: DiscordFill,
   Youtube: YoutubeFill,
   Appearance: Palette,
@@ -56,7 +60,7 @@ type TabGroupKey = "player" | "interface" | "integrations" | "application";
 const TAB_GROUPS: { labelKey: TabGroupKey; ids: TabId[] }[] = [
   { labelKey: "player", ids: ["Playback", "Shortcuts"] },
   { labelKey: "interface", ids: ["Appearance", "Overlay"] },
-  { labelKey: "integrations", ids: ["Youtube", "Discord"] },
+  { labelKey: "integrations", ids: ["Ai", "Youtube", "Discord"] },
   { labelKey: "application", ids: ["Storage", "About"] },
 ];
 
@@ -81,6 +85,18 @@ const SETTING_ITEMS: { tabId: TabId; titleKey: string; descKey?: string }[] = [
     tabId: "Playback",
     titleKey: "settings.audio.pause_on_device_change.title",
     descKey: "settings.audio.pause_on_device_change.description",
+  },
+
+  // AI
+  {
+    tabId: "Ai",
+    titleKey: "settings.ai.key.title",
+    descKey: "settings.ai.key.description",
+  },
+  {
+    tabId: "Ai",
+    titleKey: "settings.ai.features.title",
+    descKey: "settings.ai.features.description",
   },
 
   // Shortcuts
@@ -255,6 +271,7 @@ export default function SettingsModal() {
     Playback: t("settings.tabs.playback"),
     Shortcuts: t("settings.tabs.shortcuts") || "Shortcuts",
     Overlay: t("settings.tabs.overlay") || "Overlay",
+    Ai: t("settings.tabs.ai") || "AI",
     Discord: t("settings.tabs.discord") || "Discord RPC",
     Youtube: t("settings.tabs.youtube") || "YouTube",
     Appearance: t("settings.tabs.appearance"),
@@ -270,6 +287,9 @@ export default function SettingsModal() {
     Overlay:
       t("settings.overlay.description") ||
       "Desktop overlay behavior, position and lyrics display.",
+    Ai:
+      t("settings.ai.description") ||
+      "Suggestions powered by ScoutCode, stored locally on this device.",
     Discord:
       t("settings.discord.description") ||
       "Show what you're listening to on Discord with artwork, artist badge and progress bar.",
@@ -290,6 +310,7 @@ export default function SettingsModal() {
       Playback: "settings.tabs.playback",
       Shortcuts: "settings.tabs.shortcuts",
       Overlay: "settings.tabs.overlay",
+      Ai: "settings.tabs.ai",
       Discord: "settings.tabs.discord",
       Youtube: "settings.tabs.youtube",
       Appearance: "settings.theme.title",
@@ -301,6 +322,7 @@ export default function SettingsModal() {
       Playback: "settings.playback.description",
       Shortcuts: "settings.shortcuts.description",
       Overlay: "settings.overlay.description",
+      Ai: "settings.ai.description",
       Discord: "settings.discord.description",
       Youtube: "settings.youtube.description",
       Appearance: "settings.theme.description",
@@ -380,7 +402,10 @@ export default function SettingsModal() {
         onClose={handleClose}
       />
 
-      <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div
+        data-liquid-glass-surface
+        className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+      >
         <DialogHeader
           className="shrink-0 px-[20px] pt-[20px] pb-[16px]"
           title={tabLabels[activeTab]}
@@ -420,6 +445,7 @@ export default function SettingsModal() {
               {activeTab === "Overlay" && (
                 <OverlayTab searchQuery={searchQuery} />
               )}
+              {activeTab === "Ai" && <AiTab searchQuery={searchQuery} />}
               {activeTab === "Discord" && (
                 <DiscordTab searchQuery={searchQuery} />
               )}

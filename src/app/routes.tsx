@@ -12,6 +12,7 @@ import ArtistPage from "@/features/artist/ui/ArtistPage";
 import CollectionPage from "@/features/collection/ui/CollectionPage";
 import LoginPage from "@/features/auth/ui/LoginPage";
 import PlayerPage from "@/features/player/ui/FullscreenPlayer";
+import ListeningStatsPage from "@/features/player/ui/ListeningStatsPage";
 import { FullscreenRouteContext } from "@/features/navigation/fullscreenRouteContext";
 import KeepAlivePage from "./KeepAlivePage";
 import { useOfflineModeStore } from "@/features/connectivity";
@@ -41,6 +42,7 @@ const OFFLINE_PATHS = new Set([
   "/library/local",
   "/library/cached",
   "/library/saved",
+  "/stats",
   PLAYER_PATH,
 ]);
 
@@ -77,6 +79,7 @@ export function AppRoutes() {
             <Route path="/library/local" element={<LocalTracksPage />} />
             <Route path="/library/cached" element={<CachedTracksPage />} />
             <Route path="/library/saved" element={<SavedLikesPage />} />
+            <Route path="/stats" element={<ListeningStatsPage />} />
             <Route path="/artist" element={<ArtistPage />} />
             <Route path="/collection" element={<CollectionPage />} />
             <Route path="/settings" element={<Navigate to="/" replace />} />

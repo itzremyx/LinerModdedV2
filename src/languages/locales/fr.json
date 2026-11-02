@@ -216,7 +216,15 @@
     "popularArtists": "Artistes tendance",
     "popularPlaylists": "Playlists populaires",
     "dailyMixes": "Mix quotidiens",
-    "dailyMixesSubtitle": "Des playlists fraîches composées autour de vos artistes et genres préférés"
+    "mixes_view_row": "Rangée",
+    "mixes_view_grid": "Grille",
+    "dailyMixesSubtitle": "Des playlists fraîches composées autour de vos artistes et genres préférés",
+    "ai_suggestions": "Choisi pour vous",
+    "ai_suggestions_subtitle": "Des titres que vous n'avez jamais joués, d'après vos écoutes",
+    "ai_suggestions_refresh": "Rafraîchir",
+    "ai_suggestions_need_key": "Ajoutez une clé ScoutCode dans Paramètres → IA pour activer les suggestions.",
+    "ai_suggestions_empty": "Pas encore assez d'historique d'écoute — écoutez quelques titres de plus.",
+    "ai_suggestions_error": "Impossible de récupérer les suggestions pour le moment."
   },
   "library": {
     "title": "Bibliothèque",
@@ -276,6 +284,37 @@
       "remove_all_title": "Supprimer toute la musique locale ?",
       "remove_all_desc": "{tracks} ({size}) seront supprimés de Liner, avec leurs pochettes. Vos fichiers d'origine restent à leur place.",
       "removed_all": "Musique locale supprimée"
+    }
+  },
+  "stats": {
+    "eyebrow": "VOS ÉCOUTES",
+    "title": "Statistiques d'écoute",
+    "description": "Un historique privé, conservé sur cet appareil.",
+    "clear_history": "Effacer l'historique",
+    "this_week": "Cette semaine",
+    "all_time": "Écoute totale enregistrée",
+    "minutes": "minutes",
+    "hours": "heures",
+    "weekly_activity": "Activité hebdomadaire · minutes écoutées",
+    "top_tracks": "Titres les plus écoutés",
+    "plays": "écoutes",
+    "goal": "Objectif d'écoute hebdo",
+    "goal_progress": "{done} / {target} min",
+    "goal_edit": "Modifier l'objectif",
+    "goal_reached": "Objectif atteint 🎉",
+    "goal_off": "Aucun objectif",
+    "share": "Carte de partage",
+    "share_copied": "Carte copiée dans le presse-papiers",
+    "share_failed": "Impossible de créer la carte",
+    "empty": "Écoutez de la musique pour commencer votre historique d'écoute.",
+    "days": {
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mer",
+      "thu": "Jeu",
+      "fri": "Ven",
+      "sat": "Sam",
+      "sun": "Dim"
     }
   },
   "login": {
@@ -395,6 +434,14 @@
     "nothing_playing": "Aucune lecture en cours",
     "choose_track": "Choisissez un titre dans la recherche",
     "queue": "File d'attente",
+    "sleep_timer": {
+      "title": "Minuteur de veille",
+      "off": "Désactivé",
+      "end_of_track": "Fin du titre",
+      "minutes": "{minutes} min",
+      "stopped": "Minuteur arrêté",
+      "set": "Minuteur réglé"
+    },
     "lyrics": "Paroles",
     "lyrics_upgraded": "Paroles améliorées !",
     "playing_from": "Lecture depuis",
@@ -585,10 +632,59 @@
       "overlay": "Overlay",
       "privacy": "Confidentialité",
       "discord": "Discord RPC",
-      "youtube": "YouTube"
+      "youtube": "YouTube",
+      "ai": "IA"
+    },
+    "ai": {
+      "description": "Suggestions propulsées par ScoutCode, stockées localement sur cet appareil.",
+      "key": {
+        "title": "Clé API ScoutCode",
+        "description": "La clé est chiffrée avec le coffre du système et ne quitte cet appareil que pour appeler l'API. Elle n'est jamais intégrée au code de l'application.",
+        "label": "Clé API",
+        "stored": "•••••••• (enregistrée)",
+        "saved": "Clé enregistrée.",
+        "invalid": "Cela ne ressemble pas à une clé ScoutCode (doit commencer par sk-scout-)."
+      },
+      "status": {
+        "title": "État",
+        "ready": "Prêt — les suggestions sont activées.",
+        "missing": "Aucune clé enregistrée.",
+        "desktop_only": "Disponible dans l'application de bureau."
+      },
+      "endpoint": {
+        "title": "Point de terminaison",
+        "description": "Où sont envoyées les requêtes. À modifier dans <userData>/ai/config.json si votre instance est hébergée ailleurs."
+      },
+      "features": {
+        "title": "Suggestions IA sur l'accueil",
+        "description": "Avec une clé enregistrée, l'accueil peut proposer des titres que vous n'avez jamais joués, choisis d'après vos écoutes récentes."
+      }
     },
     "playback": {
       "description": "Comportement de la file d'attente, actions au clic et sortie audio."
+    },
+    "liquid_glass": {
+      "title": "Verre liquide",
+      "description": "Transforme les panneaux en verre réfractif : corps translucides, couleur de fond amplifiée, reflet spéculaire et ombres douces. Désactivez-le pour réduire les effets visuels."
+    },
+    "background": {
+      "title": "Arrière-plan personnalisé",
+      "description": "Choisissez une image à utiliser derrière l'application. Les images sont redimensionnées avant d'être enregistrées sur cet appareil.",
+      "choose": "Choisir une image",
+      "remove": "Supprimer l'image",
+      "storage_error": "Impossible d'enregistrer cette image d'arrière-plan. Essayez une image plus petite ou supprimez une autre image personnalisée."
+    },
+    "compact_mode": {
+      "title": "Mode compact",
+      "description": "Réduit les hauteurs et espacements pour afficher plus de contenu à l'écran."
+    },
+    "audio_quality": {
+      "title": "Qualité audio",
+      "description": "Choisissez la qualité de flux souhaitée. Les niveaux disponibles dépendent de la source ; l'audio YouTube n'est pas lossless.",
+      "data_saver": "Économie de données",
+      "standard": "Standard",
+      "high": "Élevée",
+      "highest": "Maximum disponible"
     },
     "shortcuts": {
       "description": "Personnalisez les raccourcis clavier globaux et ceux du lecteur.",

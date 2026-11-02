@@ -68,7 +68,8 @@ export function SettingRow({ control, icon, ...text }: SettingRowProps) {
     <div
       className={cn(
         rowSurface,
-        "flex min-h-[52px] items-center justify-between gap-[14px] py-[10px]",
+        "flex min-h-[52px] items-center justify-between gap-[14px] rounded-[10px] py-[10px] transition-colors",
+        "hover:bg-black/[0.03] dark:hover:bg-white/[0.04]",
       )}
     >
       {icon ? (
@@ -118,8 +119,14 @@ export function SettingSection({
           ) : null}
         </div>
       ) : null}
-      <div data-settings-card className={cn(PANEL_FILL_CLASS, "py-[4px]")}>
-        <div className="flex flex-col">{children}</div>
+      <div
+        data-settings-card
+        data-liquid-glass-surface
+        className={cn(PANEL_FILL_CLASS, "py-[4px]")}
+      >
+        <div className="flex flex-col [&>*+*]:border-t [&>*+*]:border-black/[0.05] dark:[&>*+*]:border-white/[0.06]">
+          {children}
+        </div>
       </div>
     </section>
   );

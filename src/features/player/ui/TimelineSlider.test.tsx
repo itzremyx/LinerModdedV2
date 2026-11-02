@@ -82,6 +82,58 @@ describe("TimelineSlider Component", () => {
     expect(container?.textContent).toContain("3:00");
   });
 
+  it("shows a timestamp tooltip following the cursor on hover", () => {
+    const handleSeek = vi.fn();
+    act(() => {
+      root?.render(
+        <TimelineSlider
+          positionMs={30000}
+          durationMs={180000}
+          onSeek={handleSeek}
+        />,
+      );
+    });
+
+    const tooltipSel = '[data-testid="timeline-tooltip"]';
+    expect(container?.querySelector(tooltipSel)).toBeNull();
+
+    const slider = container?.querySelector('[role="slider"]') as HTMLElement;
+    const track = slider.firstElementChild as HTMLElement;
+    track.getBoundingClientRect = () =>
+      ({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 4,
+        right: 200,
+        bottom: 4,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }) as DOMRect;
+
+    act(() => {
+      slider.dispatchEvent(
+        new MouseEvent("mousemove", { clientX: 100, bubbles: true }),
+      );
+    });
+
+    const tooltip = container?.querySelector(tooltipSel);
+    expect(tooltip).not.toBeNull();
+    expect(tooltip?.textContent).toBe("1:30");
+
+    act(() => {
+      slider.dispatchEvent(
+        new MouseEvent("mouseout", {
+          clientX: 100,
+          bubbles: true,
+          relatedTarget: document.body,
+        }),
+      );
+    });
+    expect(container?.querySelector(tooltipSel)).toBeNull();
+  });
+
   it("handles keyboard seek (ArrowRight/ArrowLeft/Home/End)", () => {
     const handleSeek = vi.fn();
     act(() => {

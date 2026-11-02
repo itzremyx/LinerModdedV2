@@ -223,6 +223,18 @@ export interface LinerElectronApi {
     state: SavedLyricsState,
     lyrics?: unknown,
   ) => Promise<boolean>;
+  ai: {
+    status: () => Promise<{
+      hasKey: boolean;
+      encryptionAvailable: boolean;
+      baseUrl: string;
+    } | null>;
+    setKey: (key: string) => Promise<boolean>;
+    suggestTracks: (input: {
+      played: { title: string; artist: string }[];
+      count?: number;
+    }) => Promise<{ title: string; artist: string }[]>;
+  };
   pathForFile: (file: File) => string;
 }
 
@@ -490,6 +502,11 @@ const api: LinerElectronApi = {
     ipcRenderer.invoke("saved-tracks:lyrics-get", trackId),
   savedTracksSetLyrics: (trackId, state, lyrics) =>
     ipcRenderer.invoke("saved-tracks:lyrics-set", trackId, state, lyrics),
+  ai: {
+    status: () => ipcRenderer.invoke("ai:status"),
+    setKey: (key) => ipcRenderer.invoke("ai:set-key", key),
+    suggestTracks: (input) => ipcRenderer.invoke("ai:suggest-tracks", input),
+  },
   pathForFile: (file) => webUtils.getPathForFile(file),
 };
 

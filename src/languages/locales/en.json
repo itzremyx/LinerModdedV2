@@ -211,11 +211,24 @@
     "popularArtists": "Trending Artists",
     "popularPlaylists": "Popular Playlists",
     "dailyMixes": "Your Mixes",
+    "mixes_view_row": "Row",
+    "mixes_view_grid": "Grid",
     "dailyMixesSubtitle": "Fresh playlists curated around your favorite artists and genres",
+    "ai_suggestions": "Picked for you",
+    "ai_suggestions_subtitle": "Songs you have never played, based on your listening",
+    "ai_suggestions_refresh": "Refresh",
+    "ai_suggestions_need_key": "Add a ScoutCode key in Settings → AI to enable suggestions.",
+    "ai_suggestions_empty": "Not enough listening history yet — listen to a few more songs.",
+    "ai_suggestions_error": "Couldn't fetch suggestions right now.",
     "load_failed": "Couldn't load your home feed"
   },
   "library": {
     "title": "Library",
+    "select_playlist": "Select {name} for multi-add",
+    "add_to_selected_playlists": "Add to {count} playlists",
+    "adding_to_playlists": "Adding to playlists…",
+    "added_to_multiple_playlists": "Added to {count} playlists",
+    "failed_to_add_to_playlists": "Couldn't add to {count} playlists",
     "liked_songs": "Liked Songs",
     "song": "song",
     "songs": "songs",
@@ -284,6 +297,37 @@
       "subtitle": "Liked songs downloaded to this device. They play without a connection, with lyrics.",
       "empty_title": "No downloaded liked songs",
       "empty_subtitle": "Liked songs are downloaded in the background while you're online."
+    }
+  },
+  "stats": {
+    "eyebrow": "YOUR LISTENING",
+    "title": "Listening stats",
+    "description": "A private, on-device view of your listening history.",
+    "clear_history": "Clear history",
+    "this_week": "This week",
+    "all_time": "Recorded listening",
+    "minutes": "minutes",
+    "hours": "hours",
+    "weekly_activity": "Weekly activity · minutes listened",
+    "top_tracks": "Top tracks",
+    "plays": "plays",
+    "goal": "Weekly listening goal",
+    "goal_progress": "{done} / {target} min",
+    "goal_edit": "Change goal",
+    "goal_reached": "Goal reached 🎉",
+    "goal_off": "No goal",
+    "share": "Share card",
+    "share_copied": "Card copied to clipboard",
+    "share_failed": "Couldn't create the card",
+    "empty": "Play music to start building your listening history.",
+    "days": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
     }
   },
   "login": {
@@ -401,6 +445,14 @@
     "nothing_playing": "Nothing playing",
     "choose_track": "Choose a track in search",
     "queue": "Queue",
+    "sleep_timer": {
+      "title": "Sleep timer",
+      "off": "Off",
+      "end_of_track": "End of track",
+      "minutes": "{minutes} min",
+      "stopped": "Sleep timer stopped",
+      "set": "Sleep timer set"
+    },
     "lyrics": "Lyrics",
     "volume": "Volume",
     "mute": "Mute",
@@ -598,10 +650,59 @@
       "overlay": "Overlay",
       "discord": "Discord RPC",
       "youtube": "YouTube",
-      "privacy": "Privacy"
+      "privacy": "Privacy",
+      "ai": "AI"
+    },
+    "ai": {
+      "description": "ScoutCode-powered suggestions, stored locally on this device.",
+      "key": {
+        "title": "ScoutCode API key",
+        "description": "The key is encrypted with the OS credential store and never leaves this device except to call the API. It is never bundled into the app code.",
+        "label": "API key",
+        "stored": "•••••••• (saved)",
+        "saved": "Key saved.",
+        "invalid": "That doesn't look like a ScoutCode key (it must start with sk-scout-)."
+      },
+      "status": {
+        "title": "Status",
+        "ready": "Ready — suggestions are enabled.",
+        "missing": "No key saved yet.",
+        "desktop_only": "Available in the desktop app."
+      },
+      "endpoint": {
+        "title": "Endpoint",
+        "description": "Where chat requests are sent. Override it in <userData>/ai/config.json if your instance is hosted elsewhere."
+      },
+      "features": {
+        "title": "AI suggestions on Home",
+        "description": "With a key saved, Home can suggest songs you have never played, picked from your recent listening."
+      }
     },
     "playback": {
       "description": "Queue behavior, click actions and audio output."
+    },
+    "liquid_glass": {
+      "title": "Liquid glass",
+      "description": "Turns panels into refractive glass: translucent bodies, boosted background colour, a specular highlight and soft shadows. Disable it to reduce visual effects."
+    },
+    "background": {
+      "title": "Custom background",
+      "description": "Choose a picture to use behind the app. Images are resized before saving on this device.",
+      "choose": "Choose image",
+      "remove": "Remove image",
+      "storage_error": "Couldn't save this background image. Try a smaller image or remove another custom image."
+    },
+    "compact_mode": {
+      "title": "Compact mode",
+      "description": "Reduces heights and spacing to fit more content on screen."
+    },
+    "audio_quality": {
+      "title": "Audio quality",
+      "description": "Choose a preferred stream quality. Available levels depend on the source; YouTube audio is not lossless.",
+      "data_saver": "Data saver",
+      "standard": "Standard",
+      "high": "High",
+      "highest": "Highest available"
     },
     "shortcuts": {
       "description": "Customize global system-wide and player keyboard shortcuts.",

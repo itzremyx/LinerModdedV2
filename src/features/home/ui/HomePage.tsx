@@ -8,6 +8,9 @@ import ListeningNowSection from "./ListeningNowSection";
 import { useRecentlyPlayed } from "../hooks/useRecentlyPlayed";
 import { useDailyMixes } from "../hooks/useDailyMixes";
 import { useMostSaved, usePopularAlbums } from "../hooks/useExploreCollections";
+import { useAiSuggestions } from "../hooks/useAiSuggestions";
+import AiSuggestionsSection from "./AiSuggestionsSection";
+import SectionReveal from "@/shared/ui/SectionReveal";
 import { useTranslation } from "@/languages";
 import Button from "@/shared/ui/Button";
 import { usePageBackdrop } from "@/shared/lib";
@@ -16,6 +19,7 @@ import {
   AlbumFill,
   BookmarkFill,
   FireFill,
+  SparklesFill,
   TrophyFill,
   TimeFill,
 } from "@mingcute/react";
@@ -36,6 +40,11 @@ function HomeFeed({ onRetry }: { onRetry: () => void }) {
   const { items: popularAlbums, isLoading: albumsLoading } = usePopularAlbums();
   const { items: mostSaved, isLoading: savedLoading } = useMostSaved();
   const { data: dailyMixes, isLoading: mixesLoading } = useDailyMixes();
+  const {
+    tracks: aiSuggestions,
+    status: aiStatus,
+    refresh: refreshAiSuggestions,
+  } = useAiSuggestions();
   const hasMixes = dailyMixes.length > 0;
   const firstAlbum = popularAlbums[0];
   const firstAlbumCover =
@@ -104,63 +113,83 @@ function HomeFeed({ onRetry }: { onRetry: () => void }) {
               <MixesSectionSkeleton />
             ) : (
               hasMixes && (
-                <div style={{ animation: "page-enter 200ms ease-out" }}>
+                <SectionReveal index={0}>
                   <DailyMixesSection
                     mixes={dailyMixes}
                     headingMarginTop="mt-0"
                     accentCoverUrl={homeBackdrop.cover}
                   />
-                </div>
+                </SectionReveal>
               )
             )}
 
-            {popularAlbums.length > 0 && (
-              <PopularTracksSection
-                title={t("home.popularAlbums")}
-                icon={<AlbumFill />}
-                items={popularAlbums}
+            <SectionReveal index={1}>
+              <AiSuggestionsSection
+                tracks={aiSuggestions}
+                status={aiStatus}
+                onRefresh={refreshAiSuggestions}
+                icon={<SparklesFill />}
                 headingMarginTop={hasMixesSlot ? "mt-[22px]" : "mt-0"}
               />
+            </SectionReveal>
+
+            {popularAlbums.length > 0 && (
+              <SectionReveal index={2}>
+                <PopularTracksSection
+                  title={t("home.popularAlbums")}
+                  icon={<AlbumFill />}
+                  items={popularAlbums}
+                  headingMarginTop={hasMixesSlot ? "mt-[22px]" : "mt-0"}
+                />
+              </SectionReveal>
             )}
 
             {listeningNow.length > 0 && (
-              <ListeningNowSection
-                title={t("home.whatEveryonesOn")}
-                icon={<FireFill />}
-                tracks={listeningNow}
-                headingMarginTop={
-                  hasMixesSlot || popularAlbums.length > 0
-                    ? "mt-[22px]"
-                    : "mt-0"
-                }
-              />
+              <SectionReveal index={3}>
+                <ListeningNowSection
+                  title={t("home.whatEveryonesOn")}
+                  icon={<FireFill />}
+                  tracks={listeningNow}
+                  headingMarginTop={
+                    hasMixesSlot || popularAlbums.length > 0
+                      ? "mt-[22px]"
+                      : "mt-0"
+                  }
+                />
+              </SectionReveal>
             )}
 
             {recentlyPlayed && recentlyPlayed.length > 0 && (
-              <PopularTracksSection
-                title={t("home.jumpBackIn")}
-                icon={<TimeFill />}
-                items={recentlyPlayed}
-                headingMarginTop="mt-[22px]"
-              />
+              <SectionReveal index={4}>
+                <PopularTracksSection
+                  title={t("home.jumpBackIn")}
+                  icon={<TimeFill />}
+                  items={recentlyPlayed}
+                  headingMarginTop="mt-[22px]"
+                />
+              </SectionReveal>
             )}
 
             {popularTracksAllTime && popularTracksAllTime.length > 0 && (
-              <PopularTracksSection
-                title={t("home.mostListened")}
-                icon={<TrophyFill />}
-                items={popularTracksAllTime}
-                headingMarginTop="mt-[22px]"
-              />
+              <SectionReveal index={5}>
+                <PopularTracksSection
+                  title={t("home.mostListened")}
+                  icon={<TrophyFill />}
+                  items={popularTracksAllTime}
+                  headingMarginTop="mt-[22px]"
+                />
+              </SectionReveal>
             )}
 
             {mostSaved.length > 0 && (
-              <PopularTracksSection
-                title={t("home.mostSaved")}
-                icon={<BookmarkFill />}
-                items={mostSaved}
-                headingMarginTop="mt-[22px]"
-              />
+              <SectionReveal index={6}>
+                <PopularTracksSection
+                  title={t("home.mostSaved")}
+                  icon={<BookmarkFill />}
+                  items={mostSaved}
+                  headingMarginTop="mt-[22px]"
+                />
+              </SectionReveal>
             )}
           </div>
         )}

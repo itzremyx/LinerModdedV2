@@ -50,6 +50,7 @@ import {
 } from "./netdiag.js";
 import { TouchBarManager } from "./touchbar.js";
 import { registerAuthSessionIpc } from "./auth-session-ipc.js";
+import { registerAiIpc } from "./ai-ipc.js";
 import { ThumbarController } from "./thumbar.js";
 import { OverlayManager } from "./overlay.js";
 import { detectCompositor } from "./compositor/index.js";
@@ -1527,6 +1528,7 @@ if (!gotTheLock) {
       return getServerTimeOffset();
     });
 
+    registerAiIpc();
     const authSessions = registerAuthSessionIpc();
     overlayManager?.bindAuthSource(
       () => Boolean(authSessions.get()),

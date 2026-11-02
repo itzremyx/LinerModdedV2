@@ -11,7 +11,11 @@ import { isSavedTrack } from "@/shared/media/saved";
 import { pitchShifter } from "./pitchShifter";
 import { FLAT_EQ, isEqActive } from "./equalizer";
 import { resolvePlaybackStream, type PlaybackStream } from "./streamResolver";
-import { logNowPlaying } from "./nowPlayingLog";
+import {
+  finishListeningSession,
+  logNowPlaying,
+  startListeningSession,
+} from "./nowPlayingLog";
 import {
   downloadAudioBytes,
   isBotCheckError,
@@ -58,6 +62,15 @@ export class PlayerRuntime {
   // loaded / cached track fires waiting -> playing within milliseconds, and flipping
   // the status for that re-animated the play / pause button on every seek
   private waitingTimer: ReturnType<typeof setTimeout> | null = null;
+  private listeningTrackId: string | null = null;
+  private listeningTrackStartedAt = 0;
+  private listeningSessionAt = 0;
+  private listeningTrack: {
+    trackId: string;
+    title: string;
+    artists: string;
+    coverUrl?: string;
+  } | null = null;
   public onEnded?: () => void;
   public onError?: (info: { trackId: string; message: string }) => void;
 
@@ -332,6 +345,8 @@ export class PlayerRuntime {
       if (!this.currentTrackId) return;
       if (this.attachedTrackId !== this.currentTrackId) return;
 
+      this.finishListeningTrack();
+
       // Ensure the track truly finished playing (not an empty media load or teardown artefact)
       const duration = audioEl.duration;
       const currentTime = audioEl.currentTime;
@@ -348,6 +363,10 @@ export class PlayerRuntime {
       log("green", "audio", "playing");
       if (this.recoveryHoldUntilMs === null) this.recoveryAttempts = 0;
       this.applyPlaybackRateAndPitch();
+      const activeTrack = usePlayerStore.getState().currentTrack;
+      if (activeTrack && activeTrack.id === this.currentTrackId) {
+        this.beginListeningTrack(activeTrack);
+      }
 
       if (this.stallStartTime !== null) {
         const stallDurationMs = Math.round(
@@ -372,6 +391,7 @@ export class PlayerRuntime {
     audioEl.addEventListener("pause", () => {
       if (this.isResetting || audioEl !== this.audio) return;
       log("cyan", "audio", "paused");
+      this.finishListeningTrack();
       const st = usePlayerStore.getState().status;
       if (st === "playing") {
         usePlayerStore.getState().setStatus("paused");
@@ -722,6 +742,7 @@ export class PlayerRuntime {
   private pendingStartPositionMs = 0;
 
   public stop(): void {
+    this.finishListeningTrack();
     this.cancelPendingLoad();
     this.updateMediaSessionMetadata(null);
     if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
@@ -759,6 +780,9 @@ export class PlayerRuntime {
     bypassCache: boolean = false,
   ) {
     this.cancelFade();
+    if (this.listeningTrackId && this.listeningTrackId !== track.id) {
+      this.finishListeningTrack();
+    }
     this.pendingStartPositionMs = startPositionMs;
     const epoch = ++this.loadEpoch;
 
@@ -1019,6 +1043,37 @@ export class PlayerRuntime {
     } else {
       this.audio.addEventListener("loadedmetadata", apply, { once: true });
     }
+  }
+
+  private beginListeningTrack(track: Track): void {
+    if (this.listeningTrackId === track.id) return;
+    this.finishListeningTrack();
+    this.listeningTrackId = track.id;
+    this.listeningTrack = {
+      trackId: track.id,
+      title: track.title,
+      artists: track.artists,
+      coverUrl: track.coverUrl,
+    };
+    this.listeningSessionAt = startListeningSession(this.listeningTrack);
+    this.listeningTrackStartedAt = performance.now();
+  }
+
+  private finishListeningTrack(): void {
+    if (!this.listeningTrack || !this.listeningTrackStartedAt) return;
+    const listenedMs = Math.min(
+      Math.round(performance.now() - this.listeningTrackStartedAt),
+      24 * 60 * 60 * 1000,
+    );
+    finishListeningSession(
+      this.listeningTrack.trackId,
+      this.listeningSessionAt,
+      listenedMs,
+    );
+    this.listeningTrackId = null;
+    this.listeningTrackStartedAt = 0;
+    this.listeningSessionAt = 0;
+    this.listeningTrack = null;
   }
 
   public pause() {

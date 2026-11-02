@@ -339,6 +339,14 @@ export const usePlayerStore = create<PlayerStore>()(
         }
         if (state) {
           if (
+            state.audioQuality !== "low" &&
+            state.audioQuality !== "standard" &&
+            state.audioQuality !== "high" &&
+            state.audioQuality !== "lossless"
+          ) {
+            state.audioQuality = "high";
+          }
+          if (
             typeof state.playbackRate !== "number" ||
             isNaN(state.playbackRate)
           ) {

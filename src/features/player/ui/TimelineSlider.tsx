@@ -14,6 +14,7 @@ export interface TimelineSliderProps {
   fillColor?: string;
   showTime?: boolean;
   onScrub?: (positionMs: number) => void;
+  showTimestamp?: boolean;
 }
 
 export function formatPlaybackTime(ms: number): string {
@@ -37,11 +38,15 @@ export const TimelineSlider = memo(function TimelineSlider({
   fillColor,
   showTime = false,
   onScrub,
+  showTimestamp = true,
 }: TimelineSliderProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [scrubPosition, setScrubPosition] = useState<number | null>(null);
+  const [hoverX, setHoverX] = useState<number | null>(null);
+  const [hoverMs, setHoverMs] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const duration = Math.max(0, durationMs);
   const currentPosition =
@@ -52,6 +57,32 @@ export const TimelineSlider = memo(function TimelineSlider({
   const progress =
     duration > 0 ? Math.min(1, Math.max(0, currentPosition / duration)) : 0;
   const percentage = progress * 100;
+
+  const handleHoverMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!showTimestamp || duration <= 0) return;
+      const rect = trackRef.current?.getBoundingClientRect();
+      if (!rect || rect.width === 0) return;
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      const offsetLeft = containerRect ? rect.left - containerRect.left : 0;
+      const ratio = Math.max(
+        0,
+        Math.min(1, (e.clientX - rect.left) / rect.width),
+      );
+      const half = Math.min(28, rect.width / 2);
+      const x = offsetLeft + ratio * rect.width;
+      const min = offsetLeft + half;
+      const max = offsetLeft + rect.width - half;
+      setHoverX(Math.max(min, Math.min(max, x)));
+      setHoverMs(ratio * duration);
+    },
+    [duration, showTimestamp],
+  );
+
+  const handleHoverLeave = useCallback(() => {
+    setIsHovered(false);
+    setHoverX(null);
+  }, []);
 
   const calculatePositionFromPointer = useCallback(
     (clientX: number): number => {
@@ -152,10 +183,21 @@ export const TimelineSlider = memo(function TimelineSlider({
 
   return (
     <div
+      ref={containerRef}
       className={`group relative flex ${containerHeights} items-center select-none prevent-seek ${className}`}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={handleHoverLeave}
+      onMouseMove={handleHoverMove}
     >
+      {showTimestamp && hoverX !== null && duration > 0 && (
+        <div
+          data-testid="timeline-tooltip"
+          className="pointer-events-none absolute bottom-full z-50 mb-[6px] rounded-[6px] bg-black/85 px-[7px] py-[3px] text-[11px] font-medium leading-[14px] tabular-nums text-white shadow-sm backdrop-blur-sm select-none"
+          style={{ left: hoverX, transform: "translateX(-50%)" }}
+        >
+          {formatPlaybackTime(hoverMs)}
+        </div>
+      )}
       {showTime && (
         <span className="text-[11px] tabular-nums text-text-tertiary w-[36px] text-right shrink-0 pr-[8px]">
           {formatPlaybackTime(currentPosition)}
