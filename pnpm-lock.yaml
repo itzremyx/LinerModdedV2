@@ -18,8 +18,8 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       '@mingcute/react':
-        specifier: ^1.4.1
-        version: 1.4.1(react@19.3.1)
+        specifier: ^3.0.2
+        version: 3.0.2(react@19.3.1)
       '@solar-icons/react':
         specifier: ^1.1.1
         version: 1.1.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -395,8 +395,11 @@ packages:
     resolution: {integrity: sha512-9QOtNffcOF/c1seMCDnjckb3R9WHcG34tky+FHpNKKCW0wc/scYLwMtO+ptyGUfMW0/b/n4qRiALlaFHc9Oj7Q==}
     engines: {node: '>= 10.0.0'}
 
-  '@mingcute/react@1.4.1':
-    resolution: {integrity: sha512-efVOsE6P2+w75tUudBYNAcB7LhXUVeKoGrAAaxOUgs+wLHKZxzLLq4swes7uf9qnMdtACGt10TKusFVxj4hC8A==}
+  '@mingcute/icons@3.0.2':
+    resolution: {integrity: sha512-NuDZuZy0B/MmrdoVVOodOURS1qPqgcdSHFPKSG9gPEF6/dr0+zm5pfJs0U7Yta5jjoCdX0WZcVbZOov2tMMPTA==}
+
+  '@mingcute/react@3.0.2':
+    resolution: {integrity: sha512-DqzoUWHHIzetlKgrlAnbRq6qaYLFMjn+RFdh6EIEKxVocCvG6YGSfbR1jm6h05GbTQE/F3OA2iyn8rgEnT4LLg==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -3049,8 +3052,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@mingcute/react@1.4.1(react@19.3.1)':
+  '@mingcute/icons@3.0.2': {}
+
+  '@mingcute/react@3.0.2(react@19.3.1)':
     dependencies:
+      '@mingcute/icons': 3.0.2
       react: 19.3.1
 
   '@noble/hashes@1.4.0': {}
