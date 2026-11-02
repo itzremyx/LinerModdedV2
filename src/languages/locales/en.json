@@ -283,7 +283,10 @@
       "removed_all": "Local music removed"
     },
     "offline_mix": {
-      "title": "All offline music"
+      "title": "All offline music",
+      "subtitle": "Liked songs, cached songs and files on this device. They play without a connection.",
+      "empty_title": "Nothing available offline yet",
+      "empty_subtitle": "Downloaded liked songs, songs you play and files you import all gather here to play without a connection."
     },
     "cached": {
       "title": "Cached songs",

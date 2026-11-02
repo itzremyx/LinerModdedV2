@@ -1,44 +1,21 @@
-import { useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { LuShuffle } from "react-icons/lu";
 import allOfflineCover from "@/assets/all-offline-cover.svg";
 import { playerEngine } from "@/features/player";
 import { useTranslation } from "@/languages";
-import { useCachedTracksStore } from "../cached";
-import { useLocalTracks } from "../local/hooks/useLocalTracks";
-import { useSavedTracks } from "../saved/hooks/useSavedTracks";
-import { mergeOfflineTracks } from "../lib/offlineMix";
+import { useOfflineTracks } from "../hooks/useOfflineTracks";
+
+const MIX_PATH = "/library/offline";
 
 export default function OfflineMixCard() {
   const { t } = useTranslation();
-  const { tracks: saved, isLoading: savedLoading } = useSavedTracks();
-  const { tracks: local, isLoading: localLoading } = useLocalTracks();
-  const cachedItems = useCachedTracksStore((state) => state.items);
-  const cachedLoaded = useCachedTracksStore((state) => state.loaded);
-  const loadCached = useCachedTracksStore((state) => state.load);
-
-  useEffect(() => {
-    void loadCached();
-  }, [loadCached]);
-
-  const tracks = useMemo(
-    () =>
-      mergeOfflineTracks(
-        saved,
-        cachedItems.map((item) => item.track),
-        local,
-      ),
-    [saved, cachedItems, local],
-  );
-  const loading = savedLoading || localLoading || !cachedLoaded;
+  const navigate = useNavigate();
+  const { tracks, isLoading: loading } = useOfflineTracks();
   const context = t("library.offline_mix.title");
 
   if (!loading && tracks.length === 0) return null;
 
-  const playAll = () => {
-    if (!tracks.length) return;
-    playerEngine.clearQueue();
-    void playerEngine.playTrack(tracks[0], tracks, context);
-  };
+  const openMix = () => navigate(MIX_PATH);
 
   const shuffle = () => {
     if (!tracks.length) return;
@@ -48,7 +25,7 @@ export default function OfflineMixCard() {
 
   return (
     <div
-      onClick={playAll}
+      onClick={openMix}
       className="group flex cursor-pointer flex-col gap-[8px]"
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-control">

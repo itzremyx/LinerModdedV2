@@ -6,6 +6,7 @@ import PlaylistPage from "@/features/library/ui/PlaylistPage";
 import {
   CachedTracksPage,
   LocalTracksPage,
+  OfflineMixPage,
   SavedLikesPage,
 } from "@/features/library";
 import ArtistPage from "@/features/artist/ui/ArtistPage";
@@ -41,6 +42,7 @@ const OFFLINE_PATHS = new Set([
   "/library",
   "/library/local",
   "/library/cached",
+  "/library/offline",
   "/library/saved",
   "/stats",
   PLAYER_PATH,
@@ -79,6 +81,7 @@ export function AppRoutes() {
             <Route path="/library/local" element={<LocalTracksPage />} />
             <Route path="/library/cached" element={<CachedTracksPage />} />
             <Route path="/library/saved" element={<SavedLikesPage />} />
+            <Route path="/library/offline" element={<OfflineMixPage />} />
             <Route path="/stats" element={<ListeningStatsPage />} />
             <Route path="/artist" element={<ArtistPage />} />
             <Route path="/collection" element={<CollectionPage />} />

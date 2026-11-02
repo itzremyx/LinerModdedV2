@@ -284,6 +284,12 @@
       "remove_all_title": "Supprimer toute la musique locale ?",
       "remove_all_desc": "{tracks} ({size}) seront supprimés de Liner, avec leurs pochettes. Vos fichiers d'origine restent à leur place.",
       "removed_all": "Musique locale supprimée"
+    },
+    "offline_mix": {
+      "title": "Toute la musique hors ligne",
+      "subtitle": "Titres aimés, titres en cache et fichiers de cet appareil. Ils se lisent sans connexion.",
+      "empty_title": "Rien de disponible hors ligne pour l'instant",
+      "empty_subtitle": "Les titres aimés téléchargés, ceux que vous écoutez et les fichiers importés se retrouvent ici pour se lire sans connexion."
     }
   },
   "stats": {

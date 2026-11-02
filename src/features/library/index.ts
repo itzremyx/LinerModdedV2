@@ -28,6 +28,7 @@ export * from "./hooks";
 export * from "./store/modalStore";
 export * from "./store/importStore";
 
+export { default as OfflineMixPage } from "./ui/OfflineMixPage";
 export { LocalTracksPage, LocalFilesCard, LocalDropZone } from "./local";
 export { CachedTracksPage, CachedSongsCard } from "./cached";
 export { SavedLikesPage } from "./saved";
