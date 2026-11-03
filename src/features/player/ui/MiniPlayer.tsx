@@ -788,7 +788,7 @@ function MiniPlayer({
         <div
           className={`relative grid h-full pointer-events-none ${
             embedded
-              ? "grid-cols-[minmax(0,clamp(320px,34vw,420px))_minmax(0,1fr)_260px]"
+              ? "grid-cols-[minmax(0,clamp(240px,30vw,380px))_minmax(0,1fr)_auto]"
               : "grid-cols-[286px_minmax(0,1fr)]"
           } ${!usesRoundedStyle && !embedded ? "pb-[4px]" : ""}`}
         >
@@ -912,12 +912,12 @@ function MiniPlayer({
           </div>
 
           <div
-            className={`flex h-full items-center pl-[10px] pr-[18px] pointer-events-none ${
+            className={`flex h-full min-w-0 items-center justify-end py-[4px] pl-[8px] pr-[12px] pointer-events-none ${
               embedded ? "col-start-3" : ""
             }`}
           >
             <div
-              className={`ml-auto flex items-center gap-[2px] rounded-lg p-[3px] pointer-events-auto prevent-seek cursor-default ${
+              className={`ml-auto flex min-w-0 max-w-full items-center gap-[2px] overflow-x-auto rounded-lg p-[3px] pointer-events-auto prevent-seek cursor-default [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0 ${
                 hasPageBackdrop
                   ? "bg-fill-subtle"
                   : "bg-[#ebebed] dark:bg-[#141414]"
