@@ -321,6 +321,27 @@ function RightDrawer({ onClose }: RightDrawerProps) {
   const player = usePlayerState();
   const { t } = useTranslation();
   const queueScrollRef = useRef<HTMLDivElement>(null);
+  const queueRemainingMs = useMemo(() => {
+    if (player.currentIndex < 0) return 0;
+    return player.queue
+      .slice(player.currentIndex)
+      .reduce((total, track, index) => {
+        const duration = Math.max(0, track.durationMs || 0);
+        return (
+          total +
+          (index === 0 ? Math.max(0, duration - player.positionMs) : duration)
+        );
+      }, 0);
+  }, [player.queue, player.currentIndex, player.positionMs]);
+  const queueRemainingLabel = useMemo(() => {
+    const totalMinutes = Math.ceil(queueRemainingMs / 60_000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return hours > 0
+      ? t("player.queue_remaining_hours", { hours, minutes })
+      : t("player.queue_remaining_minutes", { minutes: totalMinutes });
+  }, [queueRemainingMs, t]);
+
   const [queueLimit, setQueueLimit] = useState(() =>
     Math.max(
       50,
@@ -380,6 +401,7 @@ function RightDrawer({ onClose }: RightDrawerProps) {
     <div className="relative flex flex-col h-full w-full overflow-hidden rounded-[14px] select-none bg-bg-glass backdrop-blur-[48px]">
       <RightDrawerHeader
         trackCount={player.queue.length}
+        remainingLabel={queueRemainingLabel}
         shuffle={player.shuffle}
         repeat={player.repeat}
         canClear={player.queue.length > 1}

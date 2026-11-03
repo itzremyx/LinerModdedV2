@@ -59,6 +59,7 @@ export interface SessionState {
   repeat: RepeatMode;
   shuffle: boolean;
   audioQuality: AudioQuality;
+  crossfadeSeconds: number;
   miniPlayerStyle: MiniPlayerStyle;
   accentVariant: AccentVariant;
   pauseOnDeviceChange: boolean;
@@ -116,6 +117,7 @@ export interface PlayerStore extends PlayerState {
   setPlaybackContext: (context: string | null) => void;
   setPlaybackContextCover: (cover: string | null) => void;
   setAudioQuality: (quality: AudioQuality) => void;
+  setCrossfadeSeconds: (seconds: number) => void;
   setMiniPlayerStyle: (style: MiniPlayerStyle) => void;
   setAccentVariant: (variant: AccentVariant) => void;
   setPauseOnDeviceChange: (value: boolean) => void;
@@ -188,6 +190,7 @@ export const usePlayerStore = create<PlayerStore>()(
       repeat: "off",
       shuffle: false,
       audioQuality: "high",
+      crossfadeSeconds: 0,
       miniPlayerStyle: "default",
       accentVariant: "default",
       pauseOnDeviceChange: true,
@@ -230,6 +233,8 @@ export const usePlayerStore = create<PlayerStore>()(
       setPlaybackContextCover: (playbackContextCover) =>
         set({ playbackContextCover }),
       setAudioQuality: (audioQuality) => set({ audioQuality }),
+      setCrossfadeSeconds: (crossfadeSeconds) =>
+        set({ crossfadeSeconds: Math.max(0, Math.min(12, crossfadeSeconds)) }),
       setMiniPlayerStyle: (miniPlayerStyle: MiniPlayerStyle) =>
         set({ miniPlayerStyle }),
       setAccentVariant: (accentVariant: AccentVariant) =>
@@ -398,6 +403,7 @@ export const usePlayerStore = create<PlayerStore>()(
         shuffle: state.shuffle,
         volume: state.volume,
         audioQuality: state.audioQuality,
+        crossfadeSeconds: state.crossfadeSeconds ?? 0,
         miniPlayerStyle: state.miniPlayerStyle,
         accentVariant: state.accentVariant,
         pauseOnDeviceChange: state.pauseOnDeviceChange,

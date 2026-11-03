@@ -452,6 +452,8 @@
     "lyrics_upgraded": "Paroles améliorées !",
     "playing_from": "Lecture depuis",
     "autoplay_radio": "Radio automatique",
+    "queue_remaining_minutes": "{minutes} min restantes",
+    "queue_remaining_hours": "{hours} h {minutes} min restantes",
     "clear_queue": "Vider la file d'attente",
     "shuffle_on": "Lecture aléatoire activée",
     "shuffle_off": "Lecture aléatoire désactivée",
@@ -798,6 +800,11 @@
     "language": {
       "label": "Langue",
       "description": "Choisissez la langue de l'interface"
+    },
+    "crossfade": {
+      "title": "Fondu entre les titres",
+      "description": "Diminue progressivement le titre en cours puis augmente le suivant (0 à 12 secondes).",
+      "off": "Non"
     },
     "autoplay_similar": {
       "title": "Lecture automatique de titres similaires",

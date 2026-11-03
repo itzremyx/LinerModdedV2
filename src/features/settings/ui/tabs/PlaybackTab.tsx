@@ -5,6 +5,10 @@ import { ToggleSwitch } from "@/shared/ui";
 import { SettingRow, SettingSection, SegmentedControl } from "../controls";
 
 export function PlaybackTab({ searchQuery }: { searchQuery?: string }) {
+  const crossfadeSeconds = usePlayerStore((state) => state.crossfadeSeconds);
+  const setCrossfadeSeconds = usePlayerStore(
+    (state) => state.setCrossfadeSeconds,
+  );
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const autoplaySimilar = usePlayerStore((state) => state.autoplaySimilar);
@@ -106,6 +110,35 @@ export function PlaybackTab({ searchQuery }: { searchQuery?: string }) {
           ) : (
             <span />
           )
+        }
+      />
+
+      <SettingRow
+        title={t("settings.crossfade.title")}
+        description={t("settings.crossfade.description")}
+        titleKey="settings.crossfade.title"
+        descKey="settings.crossfade.description"
+        searchQuery={searchQuery}
+        control={
+          <div className="flex items-center gap-2">
+            <input
+              type="range"
+              min={0}
+              max={12}
+              step={1}
+              value={crossfadeSeconds}
+              aria-label={t("settings.crossfade.title")}
+              onChange={(event) =>
+                setCrossfadeSeconds(Number(event.currentTarget.value))
+              }
+              className="w-24 accent-accent"
+            />
+            <span className="w-10 text-right text-xs text-text-secondary">
+              {crossfadeSeconds === 0
+                ? t("settings.crossfade.off")
+                : String(crossfadeSeconds) + "s"}
+            </span>
+          </div>
         }
       />
 

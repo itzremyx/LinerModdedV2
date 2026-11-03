@@ -469,6 +469,8 @@
     "lyrics_upgraded": "Lyrics upgraded!",
     "playing_from": "Playing from",
     "autoplay_radio": "Autoplay Radio",
+    "queue_remaining_minutes": "{minutes} min left",
+    "queue_remaining_hours": "{hours} hr {minutes} min left",
     "clear_queue": "Clear queue",
     "shuffle_on": "Shuffle on",
     "shuffle_off": "Shuffle off",
@@ -887,6 +889,11 @@
     "language": {
       "label": "Language",
       "description": "Select the interface language"
+    },
+    "crossfade": {
+      "title": "Crossfade",
+      "description": "Fade out the current track and fade in the next one (0–12 seconds).",
+      "off": "Off"
     },
     "autoplay_similar": {
       "title": "Autoplay similar tracks",

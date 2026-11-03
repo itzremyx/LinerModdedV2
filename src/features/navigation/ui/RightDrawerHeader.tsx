@@ -8,6 +8,7 @@ import type { RepeatMode } from "@/features/player";
 
 export interface RightDrawerHeaderProps {
   trackCount: number;
+  remainingLabel: string;
   shuffle: boolean;
   repeat: RepeatMode;
   canClear: boolean;
@@ -55,6 +56,7 @@ function QueueAction({
 
 export function RightDrawerHeader({
   trackCount,
+  remainingLabel,
   shuffle,
   repeat,
   canClear,
@@ -88,7 +90,7 @@ export function RightDrawerHeader({
           {t("player.queue")}
         </h2>
         <span className="truncate text-caption leading-tight text-text-tertiary">
-          {t("common.tracks", { count: trackCount })}
+          {t("common.tracks", { count: trackCount })} · {remainingLabel}
         </span>
       </div>
 

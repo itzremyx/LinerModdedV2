@@ -17,6 +17,7 @@ const EMPTY_STATE: PlayerState = {
   playbackContext: null,
   playbackContextCover: null,
   audioQuality: "high",
+  crossfadeSeconds: 0,
   miniPlayerStyle: "default",
   accentVariant: "default",
   pauseOnDeviceChange: true,

@@ -36,6 +36,7 @@ export class PlayerRuntime {
   private loadAbortController: AbortController | null = null;
   private isResetting = false;
   private fadeTimer: ReturnType<typeof setTimeout> | null = null;
+  private crossfadeTriggered = false;
   private stallStartTime: number | null = null;
   private loadStartTime = 0;
   private ttfbMs = 0;
@@ -280,7 +281,26 @@ export class PlayerRuntime {
       if (Number.isNaN(audioEl.currentTime)) return;
 
       const posMs = Math.round(audioEl.currentTime * 1000);
-      usePlayerStore.getState().setPosition(posMs);
+      const state = usePlayerStore.getState();
+      state.setPosition(posMs);
+      const crossfadeMs = state.crossfadeSeconds * 1000;
+      const remainingMs = Math.round(audioEl.duration * 1000) - posMs;
+      if (
+        crossfadeMs > 0 &&
+        !this.crossfadeTriggered &&
+        state.status === "playing" &&
+        state.repeat !== "one" &&
+        state.currentIndex >= 0 &&
+        state.currentIndex < state.queue.length - 1 &&
+        remainingMs > 0 &&
+        remainingMs <= crossfadeMs
+      ) {
+        this.crossfadeTriggered = true;
+        this.fadeVolume(0, remainingMs, () => {
+          if (this.currentTrackId !== state.currentTrack?.id) return;
+          state.dispatch({ type: "SKIP_NEXT", isAutoEnd: true });
+        });
+      }
       if (
         this.recoveryHoldUntilMs !== null &&
         posMs >= this.recoveryHoldUntilMs
@@ -344,6 +364,7 @@ export class PlayerRuntime {
       if (this.isResetting || audioEl !== this.audio) return;
       if (!this.currentTrackId) return;
       if (this.attachedTrackId !== this.currentTrackId) return;
+      if (this.crossfadeTriggered) return;
 
       this.finishListeningTrack();
 
@@ -780,6 +801,7 @@ export class PlayerRuntime {
     bypassCache: boolean = false,
   ) {
     this.cancelFade();
+    this.crossfadeTriggered = false;
     if (this.listeningTrackId && this.listeningTrackId !== track.id) {
       this.finishListeningTrack();
     }
@@ -1123,7 +1145,15 @@ export class PlayerRuntime {
       playPromise
         .then(() => {
           if (epoch !== this.loadEpoch) return;
-          this.fadeVolume(targetVolume, 180);
+          this.fadeVolume(
+            targetVolume,
+            usePlayerStore.getState().crossfadeSeconds > 0
+              ? Math.min(
+                  1200,
+                  usePlayerStore.getState().crossfadeSeconds * 1000,
+                )
+              : 180,
+          );
         })
         .catch((error) => {
           if (epoch !== this.loadEpoch) return;
@@ -1153,7 +1183,12 @@ export class PlayerRuntime {
           if (epoch === this.loadEpoch) this.activePlayPromise = null;
         });
     } else {
-      this.fadeVolume(targetVolume, 180);
+      this.fadeVolume(
+        targetVolume,
+        usePlayerStore.getState().crossfadeSeconds > 0
+          ? Math.min(1200, usePlayerStore.getState().crossfadeSeconds * 1000)
+          : 180,
+      );
     }
   }
 
