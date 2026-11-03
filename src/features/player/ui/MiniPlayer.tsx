@@ -46,6 +46,13 @@ import { useSongMenuItems } from "../hooks/useSongMenuItems";
 import { useSleepTimerStore } from "../store/sleepTimerStore";
 
 const PROGRESS_STEP_MS = 1000;
+
+function formatTimestamp(milliseconds: number): string {
+  const totalSeconds = Math.max(0, Math.floor(milliseconds / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
 const PROGRESS_JUMP_TRANSITION =
   "transform 380ms cubic-bezier(0.22, 1, 0.36, 1)";
 
@@ -401,7 +408,6 @@ function MiniPlayer({
   const sleepMode = useSleepTimerStore((s) => s.mode);
   const sleepRemaining = useSleepTimerStore((s) => s.remaining);
   const setSleepMode = useSleepTimerStore((s) => s.set);
-  const audioQuality = usePlayerStore((s) => s.audioQuality);
   const compactMode = useCompactMode();
   const sleepActive = sleepMode !== "off";
 
@@ -782,7 +788,7 @@ function MiniPlayer({
         <div
           className={`relative grid h-full pointer-events-none ${
             embedded
-              ? "grid-cols-[280px_minmax(0,1fr)_260px]"
+              ? "grid-cols-[minmax(0,clamp(320px,34vw,420px))_minmax(0,1fr)_260px]"
               : "grid-cols-[286px_minmax(0,1fr)]"
           } ${!usesRoundedStyle && !embedded ? "pb-[4px]" : ""}`}
         >
@@ -877,8 +883,14 @@ function MiniPlayer({
                   artistId={player.currentTrack?.artistId}
                   artistList={player.currentTrack?.artistList}
                   plain={isLocal}
-                  className="text-text-tertiary pointer-events-auto"
+                  className="min-w-0 truncate text-text-tertiary pointer-events-auto"
                 />
+                {durationMs > 0 && (
+                  <span className="ml-auto shrink-0 whitespace-nowrap text-[11px] tabular-nums text-text-tertiary">
+                    {formatTimestamp(player.positionMs)} /{" "}
+                    {formatTimestamp(durationMs)}
+                  </span>
+                )}
               </p>
             </div>
             {!isLocal && (
@@ -897,22 +909,6 @@ function MiniPlayer({
                 {isLiked ? <HeartFill size={20} /> : <HeartLine size={20} />}
               </button>
             )}
-            <span
-              className="shrink-0 rounded-[5px] bg-black/[0.06] px-[6px] py-[2px] text-[10px] font-medium uppercase tracking-wide text-text-tertiary pointer-events-none prevent-seek"
-              title={t("settings.audio_quality.title")}
-            >
-              {t(
-                `settings.audio_quality.${
-                  audioQuality === "lossless"
-                    ? "highest"
-                    : audioQuality === "high"
-                      ? "high"
-                      : audioQuality === "standard"
-                        ? "standard"
-                        : "data_saver"
-                }`,
-              )}
-            </span>
           </div>
 
           <div
