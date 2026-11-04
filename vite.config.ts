@@ -72,6 +72,10 @@ export default defineConfig(({ command, mode }) => {
       outDir: "dist",
       emptyOutDir: true,
       chunkSizeWarningLimit: 2048,
+      minify: "terser",
+      sourcemap: false,
+      cssCodeSplit: true,
+      assetsInlineLimit: 8192,
     },
   };
 });
