@@ -1,0 +1,61 @@
+# Optimized Electron builder config for minimal bundle size
+appId: com.hkamori.liner
+productName: Liner
+
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+  - "!**/*.map"
+  - "!**/*.d.ts"
+  - "!**/node_modules/.bin"
+  - "!**/node_modules/**/test/**"
+  - "!**/node_modules/**/tests/**"
+  - "!**/node_modules/**/docs/**"
+  - "!**/node_modules/**/examples/**"
+  - "!**/node_modules/**/demo/**"
+  - "!**/node_modules/**/*.md"
+  - "!**/node_modules/**/*.mjs.map"
+  - native/snap-preview/build/Release/snap_preview.node
+
+# Compression settings
+asar: true
+asarUnpack:
+  - native/**/*.node
+
+directories:
+  output: release
+  buildResources: resources
+
+win:
+  certificateFile: null
+  certificatePassword: null
+  signingHashAlgorithms:
+    - sha256
+  target:
+    - msi
+    - portable
+
+# Aggressive compression for MSI
+msi:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Audio
+
+mac:
+  target:
+    - dmg
+    - zip

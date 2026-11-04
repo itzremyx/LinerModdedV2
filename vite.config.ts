@@ -75,7 +75,50 @@ export default defineConfig(({ command, mode }) => {
       minify: "terser",
       sourcemap: false,
       cssCodeSplit: true,
-      assetsInlineLimit: 8192,
+      assetsInlineLimit: 4096, // Reduced from 8192
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          passes: 3,
+        },
+        mangle: true,
+        format: {
+          comments: false,
+        },
+      },
+      rollupOptions: {
+        output: {
+          // Aggressive code splitting: separate heavy modules into lazy chunks
+          manualChunks(id: string) {
+            // Core React bundles
+            if (id.includes("node_modules/react")) return "react-core";
+            if (id.includes("node_modules/react-dom")) return "react-core";
+
+            // UI kit
+            if (id.includes("recharts")) return "ui-charts";
+            if (id.includes("lucide-react")) return "ui-icons";
+
+            // API clients - lazy load
+            if (id.includes("spotify-api")) return "api-spotify";
+            if (id.includes("innertube")) return "api-youtube";
+
+            // Heavy pages - lazy load
+            if (id.includes("src/pages/") || id.includes("src/features/")) {
+              const match = id.match(/src\/(pages|features)\/(\w+)/);
+              if (match) return `feature-${match[2]}`;
+            }
+          },
+          // Enable code splitting per chunk
+          inlineChunkLimit: 0,
+        },
+        // Tree-shake dead code aggressively
+        treeshake: {
+          moduleSideEffects: false,
+          propertyReadSideEffects: false,
+          tryCatchDeoptimization: false,
+        },
+      },
     },
   };
 });
