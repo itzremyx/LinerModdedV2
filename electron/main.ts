@@ -100,6 +100,10 @@ process.on("unhandledRejection", (reason) => {
 });
 
 // gpu & performance switches (keeps cpu low inside vms / budget laptops)
+// OPTIMIZATIONS: Setup memory management before configuring Chromium
+import { setupElectronOptimizations } from "./optimizations/electron-init.js";
+setupElectronOptimizations();
+
 app.commandLine.appendSwitch("enable-gpu-rasterization");
 app.commandLine.appendSwitch("enable-zero-copy");
 app.commandLine.appendSwitch("ignore-gpu-blocklist");
